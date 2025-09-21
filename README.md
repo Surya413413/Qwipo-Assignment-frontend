@@ -1,70 +1,163 @@
-# Getting Started with Create React App
+Qwipo Customer Management Application Table of Contents
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Introduction
 
-## Available Scripts
+Tech Stack
 
-In the project directory, you can run:
+Project Setup
 
-### `npm start`
+Database Design
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Backend (Node.js + Express)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Frontend (React)
 
-### `npm test`
+Key Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Running the Application
 
-### `npm run build`
+Screenshots
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Author
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Introduction
+This is a full-stack Customer Management Application that allows users to:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Add, edit, delete, and view customers.
 
-### `npm run eject`
+Manage multiple addresses for each customer.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Search and filter customers by name or city.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Navigate between pages with smooth pagination.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The application consists of a backend API built with Node.js and Express.js, a frontend UI built with React.js, and uses SQLite as the database.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Tech Stack Layer Technology Purpose Backend Node.js + Express.js Server-side logic and API Database SQLite Store customer and address data Frontend React.js + React Router DOM User interface HTTP Requests Axios Fetch data from backend CORS cors Enable frontend-backend communication
+Project Setup Folder Structure customer-management-app/ ├── client/ # React frontend └── server/ # Node.js backend
+customer-management-app/ ├── client/ # React frontend │ ├── public/ # Public assets │ │ └── index.html │ ├── src/ │ │ ├── components/ # Reusable components │ │ │ ├── CustomerList.js │ │ │ ├── CustomerForm.js │ │ │ ├── AddressList.js │ │ │ └── AddressForm.js │ │ ├── pages/ # React pages │ │ │ ├── CustomerListPage.js │ │ │ ├── CustomerDetailPage.js │ │ │ └── CustomerFormPage.js │ │ ├── App.js # Main app with routes │ │ ├── index.js # React entry point │ │ └── Pages.css # Common page styles │ └── package.json │ ├── server/ # Node.js backend │ ├── database.db # SQLite database file │ ├── index.js # Main server entry point │ ├── package.json │ └── routes/ # Optional: separate folder for routes │ ├── customers.js │ └── addresses.js │ ├── .gitignore └── README.md
 
-## Learn More
+Backend Setup
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Navigate to server/ folder:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+cd server npm init -y
 
-### Code Splitting
+Install dependencies:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+npm install express sqlite3 cors
 
-### Analyzing the Bundle Size
+Create index.js as the backend entry point.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Start the server:
 
-### Making a Progressive Web App
+node index.js
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Frontend Setup
 
-### Advanced Configuration
+Navigate to project root and create React app:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+npx create-react-app client cd client
 
-### Deployment
+Install dependencies:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+npm install axios react-router-dom react-icons
 
-### `npm run build` fails to minify
+Start the React development server:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+npm start
+
+Database Design (SQLite) customers Table Column Type Constraints id INTEGER PRIMARY KEY AUTOINCREMENT first_name TEXT NOT NULL last_name TEXT NOT NULL phone_number TEXT NOT NULL UNIQUE addresses Table Column Type Constraints id INTEGER PRIMARY KEY AUTOINCREMENT customer_id INTEGER FOREIGN KEY (customers) address_details TEXT NOT NULL city TEXT NOT NULL state TEXT NOT NULL pin_code TEXT NOT NULL
+One customer can have multiple addresses.
+
+Backend (Node.js + Express) API Endpoints
+Customer Endpoints
+
+POST /api/customers → Create a new customer
+
+GET /api/customers → List all customers (supports search, filter, pagination)
+
+GET /api/customers/:id → Get single customer
+
+PUT /api/customers/:id → Update customer
+
+DELETE /api/customers/:id → Delete customer
+
+Address Endpoints
+
+POST /api/customers/:id/addresses → Add address
+
+GET /api/customers/:id/addresses → Get all addresses for a customer
+
+PUT /api/addresses/:addressId → Update address
+
+DELETE /api/addresses/:addressId → Delete address
+
+Example: Fetch All Customers app.get('/api/customers', (req, res) => { const { search, city, page = 1, limit = 10 } = req.query; let sql = "SELECT * FROM customers WHERE 1=1"; const params = [];
+
+if (search) {
+    sql += " AND (first_name LIKE ? OR last_name LIKE ?)";
+    params.push(`%${search}%`, `%${search}%`);
+}
+if (city) {
+    sql += " AND id IN (SELECT customer_id FROM addresses WHERE city LIKE ?)";
+    params.push(`%${city}%`);
+}
+
+const offset = (page - 1) * limit;
+sql += ` LIMIT ? OFFSET ?`;
+params.push(parseInt(limit), parseInt(offset));
+
+db.all(sql, params, (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    db.get("SELECT COUNT(*) AS total FROM customers", (err2, total) => {
+        if (err2) return res.status(500).json({ error: err2.message });
+        res.json({ data: rows, total: total.total });
+    });
+});
+});
+
+Frontend (React) Pages
+CustomerListPage.js → Lists customers, supports search, filter, and pagination
+
+CustomerDetailPage.js → Displays customer details and addresses
+
+CustomerFormPage.js → Add or edit customer
+
+Components
+
+CustomerList.js → Renders customer table
+
+CustomerForm.js → Customer form
+
+AddressList.js → Lists customer addresses
+
+AddressForm.js → Add/edit address
+
+Example: Search & Filter Input with Icons import { FaCity } from 'react-icons/fa';
+
+setCityFilter(e.target.value)} />
+Key Features
+CRUD Operations for customers and addresses
+
+Search & Filter by name and city
+
+Pagination for customer list
+
+Client & Server Validation
+
+Smooth Navigation using React Router
+
+Running the Application Backend cd server node index.js
+Frontend cd client npm start
+
+Backend runs at: http://localhost:5000
+
+Frontend runs at: http://localhost:5000
+
+Screenshots
+image
+Author
+Name: suresh
+
+GitHub: github.com/Surya413413
